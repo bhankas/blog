@@ -1,0 +1,11 @@
+#+options: html-link-use-abs-url:nil html-postamble:nil html-preamble:nil
+#+options: html-scripts:t html-style:nil html5-fancy:t tex:t
+#+options: tags:t title:nil toc:nil num:0 date:t
+#+html_doctype: html5
+#+html_container: div
+#+description:
+#+keywords:
+#+html_head: <link rel="stylesheet" type="text/css" href="css/style.css" />
+#+infojs_opt:
+#+creator: bhankas
+#+latex_header:
