@@ -4,7 +4,7 @@
       '(("blog-posts"
          :base-directory "~/org/blog/src/posts/"
          :base-extension "org"
-         :publishing-directory "~/org/blog/result/posts/"
+         :publishing-directory "~/org/blog/docs/posts/"
          :recursive t
          :publishing-function org-html-publish-to-html
          :headline-levels 3
@@ -22,7 +22,7 @@
         ("blog-pages"
          :base-directory "~/org/blog/src/"
          :base-extension "org"
-         :publishing-directory "~/org/blog/result/"
+         :publishing-directory "~/org/blog/docs/"
          :exclude "rss.org"
          :recursive t
          :publishing-function org-html-publish-to-html
@@ -37,7 +37,7 @@
         ("blog-static"
          :base-directory "~/org/blog/src/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/org/blog/result/"
+         :publishing-directory "~/org/blog/docs/"
          :recursive t
          :publishing-function org-publish-attachment)
         ("blog-rss"
@@ -47,7 +47,7 @@
          :exclude ".*"
          :include ("../rss.org")
          :publishing-function (org-rss-publish-to-rss)
-         :publishing-directory "~/org/blog/result/"
+         :publishing-directory "~/org/blog/docs/"
          :with-toc nil
          :section-numbers nil
          :title "Bhankas")
