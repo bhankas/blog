@@ -4,6 +4,10 @@
     a:hover, a:visited:hover {color:#def}
     a:visited {color:#dcf}
 }
+table{
+    margin-left: auto;
+    margin-right: auto;
+}
 body{
     margin:1em auto;
     max-width:48em;
