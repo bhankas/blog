@@ -42,7 +42,11 @@
                                      (file-id (cdr value)))
                                  (unless (search-forward file-id nil t)
                                    (goto-char (point-max))
-                                   (write-region (format "- [[id:%s][%s]]\n" file-id title) nil "~/org/blog/src/index.org" 'append)
+                                   (write-region (format (concat (format-time-string "%Y-%m-%d") "\n- [[id:%s][%s]]\n")
+                                                         file-id title)
+                                                 nil
+                                                 "~/org/blog/src/index.org"
+                                                 'append)
                                    (goto-char (point-min)))))
                              bhankas-blog-attr-hashtable)))
 
