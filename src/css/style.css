@@ -57,9 +57,6 @@ a > h1 {
     margin: 30px;
     text-shadow: 4px 4px #550527;
 }
-a:visited > h1 {
-    color: #b6a0ff;
-}
 a > h1:hover {
     text-shadow: none;
     transform: translate(2px, 2px);

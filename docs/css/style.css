@@ -36,7 +36,6 @@ body{
     margin:1em auto;
     max-width:48em;
     padding: 0.52em;
-    /* font:1.2em/1.42 sans-serif; */
 }
 h1,h2,h3 {
     line-height:1.2
@@ -57,9 +56,6 @@ a > h1 {
     color: #e0f6e0;
     margin: 30px;
     text-shadow: 4px 4px #550527;
-}
-a:visited > h1 {
-    color: #b6a0ff;
 }
 a > h1:hover {
     text-shadow: none;
