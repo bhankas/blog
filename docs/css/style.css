@@ -35,35 +35,35 @@ table{
 body{
     margin:1em auto;
     max-width:48em;
-    padding:0 .52em;
-    font:1.2em/1.42 sans-serif
+    padding: 0.52em;
+    /* font:1.2em/1.42 sans-serif; */
 }
 h1,h2,h3 {
     line-height:1.2
 }
 h1 {
-    font-size: 32px;
+    font-size: 28px;
 }
 h2 {
     font-size: 24px;
 }
 p {
-    font-size: 20px;
+    font-size: 18px;
 }
 a > h1 {
-  font-family: Poppins;
-  text-align: center;
-  font-size: 90px;
-  color: #00bcff;
-  margin: 30px;
-  text-shadow: 4px 4px #550527;
+    font-family: Poppins;
+    text-align: center;
+    font-size: 48px;
+    color: #e0f6e0;
+    margin: 30px;
+    text-shadow: 4px 4px #550527;
 }
 a:visited > h1 {
     color: #b6a0ff;
 }
 a > h1:hover {
-  text-shadow: none;
-  transform: translate(2px, 2px);
+    text-shadow: none;
+    transform: translate(2px, 2px);
 }
 a {
     text-decoration: none;
@@ -83,4 +83,7 @@ a:hover {
     text-shadow: none;
     color: #e0f6e0;
     background: #00415e;
+}
+::selection {
+    background: #240f55;;
 }
