@@ -32,7 +32,7 @@
     (puthash file (bhankas-blog-get-file-attrs file) bhankas-blog-attr-hashtable)))
 
 ; done : for now.
-; TODO: Sort by date published.
+; TODO: Sort descending by date published (latest first).
 (defun bhankas-blog-org-publish-update-index ()
   "Update `TITLE' and `FILE-ID' in blog index."
   (interactive)
@@ -42,7 +42,7 @@
                                      (file-id (cdr value)))
                                  (unless (search-forward file-id nil t)
                                    (goto-char (point-max))
-                                   (write-region (format (concat (format-time-string "%Y-%m-%d") "\n- [[id:%s][%s]]\n")
+                                   (write-region (format (concat  "| [[id:%s][%s]] | \\hellip |  " (format-time-string "%Y-%m-%d") " | \n")
                                                          file-id title)
                                                  nil
                                                  "~/org/blog/src/index.org"
