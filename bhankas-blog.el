@@ -2,10 +2,14 @@
 ;;
 ;;; Commentary:
 ;;; A static site generator using org-mode, org-publish and Emacs-Lisp
+;;;
+;;; TODO: Use shr-dom-to-xml to generate HTML from Elisp quoted list.
+;;; TODO: Use libxml-parse-html-region to generate Elisp from HTML.
 
 ;;; Code:
 
 (require 'org)
+(require 'shr)
 
 (defconst bhankas-blog-src-path  "~/org/blog/src/posts/")
 (defvar bhankas-blog-src-file-list)
@@ -53,7 +57,15 @@ value = property-list of title, ID, date_created and path."
                           #'string>
                           :key #'(lambda (attrs) (plist-get attrs :date_created))))))
 
-; TODO: Rewrite for new plist data structure
+; TODO rewrite:
+; 1. Only have single heading in index.org, with some default, identifiable name.
+; 2. Publish blog
+; 3. Convert published index.html to dom (lisp) using libxml-parse-html-region.
+; 4. Insert the reverse chronological list of posts using a macro or something
+; 5. Convert the dom lisp back to html and save in index.html
+; 6. ???
+; 7. Profit!
+
 (defun bhankas-blog-org-publish-update-index ()
   "Update `TITLE' and `FILE-ID' in blog index."
   (interactive)
@@ -81,8 +93,9 @@ value = property-list of title, ID, date_created and path."
                  (progn
                    (bhankas-blog-src-list-files)
                    (bhankas-blog-get-src-attrs)
-                   (bhankas-blog-org-publish-update-index)
-                   (org-publish "blog" t)))
+                   ;; (org-publish "blog" t)
+                   ;; (bhankas-blog-org-publish-update-index)
+                   ))
                "bhankas-blog-rebuild"))
 
 ;;; bhankas-blog.el ends here
