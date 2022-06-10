@@ -29,9 +29,7 @@ Returns a property list of:
   (with-temp-buffer
     (insert-file-contents file-path)
     (let ((keywords (mapcar #'car (mapcar #'cdr (org-collect-keywords '("TITLE" "DATE")))))
-          (id (with-no-warnings
-                (goto-line 2)
-                (replace-regexp-in-string "\\(^:ID:[ \t]+\\|\n\\)" "" (thing-at-point 'line t)))))
+          (id (org-entry-get 1 "ID")))
       `(:title ,(car keywords) :id ,id :date_created ,(cadr keywords) :path ,file-path))))
 
 (defun bhankas-blog-get-src-attrs ()
