@@ -68,23 +68,7 @@ value = property-list of title, ID, date_created and path."
 
 (defun bhankas-blog-org-publish-update-index ()
   "Update `TITLE' and `FILE-ID' in blog index."
-  (interactive)
-  (with-temp-buffer
-    (insert-file-contents "~/org/blog/src/index.org")
-    (maphash (lambda (key value)
-               (let ((title (car value))
-                     (file-id (cdr value)))
-                 (unless (search-forward file-id nil t)
-                   (goto-char (point-max))
-                   (write-region (format (concat  "| [[id:%s][%s]] | \\hellip |  "
-                                                  (format-time-string "%Y-%m-%d")
-                                                  " | \n")
-                                         file-id title)
-                                 nil
-                                 "~/org/blog/src/index.org"
-                                 'append)
-                   (goto-char (point-min)))))
-             bhankas-blog-attr-hashtable)))
+  (interactive))
 
 (defun bhankas-blog-rebuild ()
   "Rebuild the blog."
