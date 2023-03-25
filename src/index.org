@@ -1,7 +1,0 @@
-#+INCLUDE: "./html-templates/header-level-0.html" export html
-
-#+TITLE: bhankas
-#+SETUPFILE: ~/org/blog/org-templates/level-0.org
-
-| Post | | Date |
-| [[id:20220510T130026.793199][hello, world!]] | \emsp \dots \emsp |  2022-05-22 | 
