@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "bhankas.org"
+base_url = "https://bhankas.org"
 title = "bhankas"
 description = "bhankas"
 
