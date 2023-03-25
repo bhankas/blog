@@ -13,6 +13,8 @@ generate_feed = true
 
 output_dir = "docs"
 
+hard_link_static = true
+
 # after-dark theme options
 theme = "after-dark"
 taxonomies = [
