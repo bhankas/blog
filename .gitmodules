@@ -1,0 +1,3 @@
+[submodule "after-dark"]
+	path = themes/after-dark
+	url = https://github.com/getzola/after-dark
