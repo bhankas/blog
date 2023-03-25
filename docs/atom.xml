@@ -14,24 +14,6 @@
         <author>
           <name>Unknown</name>
         </author>
-        <link rel="alternate" href="https://bhankas.org/blog/first-post/" type="text/html"/>
-        <id>https://bhankas.org/blog/first-post/</id>
-        <content type="html">&lt;p&gt;Hello, this is my first blog post!&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;&#x2F;h2&gt;
-&lt;p&gt;This is where I introduce the topic of my post.&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;section-1&quot;&gt;Section 1&lt;&#x2F;h2&gt;
-&lt;p&gt;This is the first section of my post.&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;section-2&quot;&gt;Section 2&lt;&#x2F;h2&gt;
-&lt;p&gt;This is the second section of my post.&lt;&#x2F;p&gt;
-</content>
-    </entry>
-    <entry xml:lang="en">
-        <title>My First Post</title>
-        <published>2023-03-25T00:00:00+00:00</published>
-        <updated>2023-03-25T00:00:00+00:00</updated>
-        <author>
-          <name>Unknown</name>
-        </author>
         <link rel="alternate" href="https://bhankas.org/first-post/" type="text/html"/>
         <id>https://bhankas.org/first-post/</id>
         <content type="html">&lt;h2 id=&quot;what-is-this&quot;&gt;What is this?&lt;&#x2F;h2&gt;
