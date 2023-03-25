@@ -2,11 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
     <title>bhankas</title>
     <subtitle>bhankas</subtitle>
-    <link href="bhankas.org/atom.xml" rel="self" type="application/atom+xml"/>
-    <link href="bhankas.org"/>
+    <link href="https://bhankas.org/atom.xml" rel="self" type="application/atom+xml"/>
+    <link href="https://bhankas.org"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2023-03-25T00:00:00+00:00</updated>
-    <id>bhankas.org/atom.xml</id>
+    <id>https://bhankas.org/atom.xml</id>
     <entry xml:lang="en">
         <title>My First Post</title>
         <published>2023-03-25T00:00:00+00:00</published>
@@ -14,8 +14,8 @@
         <author>
           <name>Unknown</name>
         </author>
-        <link rel="alternate" href="bhankas.org/blog/first-post/" type="text/html"/>
-        <id>bhankas.org/blog/first-post/</id>
+        <link rel="alternate" href="https://bhankas.org/blog/first-post/" type="text/html"/>
+        <id>https://bhankas.org/blog/first-post/</id>
         <content type="html">&lt;p&gt;Hello, this is my first blog post!&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;&#x2F;h2&gt;
 &lt;p&gt;This is where I introduce the topic of my post.&lt;&#x2F;p&gt;
@@ -32,8 +32,8 @@
         <author>
           <name>Unknown</name>
         </author>
-        <link rel="alternate" href="bhankas.org/first-post/" type="text/html"/>
-        <id>bhankas.org/first-post/</id>
+        <link rel="alternate" href="https://bhankas.org/first-post/" type="text/html"/>
+        <id>https://bhankas.org/first-post/</id>
         <content type="html">&lt;h2 id=&quot;what-is-this&quot;&gt;What is this?&lt;&#x2F;h2&gt;
 &lt;p&gt;So, after nearly a year, and a LOT of $LIFE stuff, here&#x27;s my next best attempt at blogging.&lt;&#x2F;p&gt;
 &lt;p&gt;I have no idea what I intend to write here as of now, but I&#x27;ll just go with the flow.&lt;&#x2F;p&gt;

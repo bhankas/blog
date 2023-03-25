@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>bhankas.org/</loc>
+        <loc>https://bhankas.org/</loc>
     </url>
     <url>
-        <loc>bhankas.org/blog/first-post/</loc>
+        <loc>https://bhankas.org/blog/first-post/</loc>
         <lastmod>2023-03-25</lastmod>
     </url>
     <url>
-        <loc>bhankas.org/categories/</loc>
+        <loc>https://bhankas.org/categories/</loc>
     </url>
     <url>
-        <loc>bhankas.org/first-post/</loc>
+        <loc>https://bhankas.org/first-post/</loc>
         <lastmod>2023-03-25</lastmod>
     </url>
     <url>
-        <loc>bhankas.org/page/1/</loc>
+        <loc>https://bhankas.org/page/1/</loc>
     </url>
     <url>
-        <loc>bhankas.org/tags/</loc>
+        <loc>https://bhankas.org/tags/</loc>
     </url>
 </urlset>

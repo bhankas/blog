@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: bhankas.org/sitemap.xml
+Sitemap: https://bhankas.org/sitemap.xml
