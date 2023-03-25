@@ -31,6 +31,11 @@
 &lt;li&gt;Zola : Static site generator that converts &lt;code&gt;.md&lt;&#x2F;code&gt; to &lt;code&gt;.html&lt;&#x2F;code&gt;, among other stuff (like feed and index generation)&lt;&#x2F;li&gt;
 &lt;li&gt;Github pages : To actually get this on the internet. Because I still haven&#x27;t setup Cloudflare tunnel on my Pi (Big surprise there, not)&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;test&quot;&gt;Test&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b2c2f;color:#cccece;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#c594c5;&quot;&gt;public static&lt;&#x2F;span&gt;&lt;span&gt; void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#6699cc;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#fac863;&quot;&gt;System&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span&gt;out&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#6699cc;&quot;&gt;println&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#99c794;&quot;&gt;nothing&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 </content>
     </entry>
 </feed>
