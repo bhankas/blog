@@ -1,37 +1,67 @@
-# The URL the site will be built for
-base_url = "https://bhankas.org"
-title = "bhankas"
-description = "bhankas"
+baseURL = 'https://bhankas.org/'
+languageCode = 'en-us'
+title = 'bhankas'
+copyright = "anon"
 
-# Whether to automatically compile all Sass files in the sass directory
-compile_sass = true
+# Theme config : Bear Cub
+theme = 'hugo-bearcub'
+defaultContentLanguage = 'en'
 
-# Whether to build a search index to be used later on by a JavaScript library
-build_search_index = true
+# Generate a nice robots.txt for SEO
+enableRobotsTXT = true
 
-generate_feed = true
+[menu]
+[[menu.main]]
+  name = "blog"
+  pageRef = "/blog"
+  weight = 1
 
-output_dir = "docs"
+# Setup syntax highlighting without inline styles. For more information about
+# why you'd want to avoid inline styles, see
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/style-src#unsafe_inline_styles
+[markup]
+  [markup.highlight]
+    lineNos = true
+    lineNumbersInTable = false
+    # This allows Bear Cub to use a variation of Dracula that is more accessible
+    # to people with poor eyesight. For more information about color contrast
+    # and accessibility, see https://web.dev/color-and-contrast-accessibility/
+    noClasses = false
 
-hard_link_static = true
+# Multilingual mode config. More for information about how to setup translation,
+# see https://gohugo.io/content-management/multilingual/
+[languages]
+  [languages.en]
+    title = "bhankas"
+    languageName = "en-US ????"
+    LanguageCode = "en-US"
+    contentDir = "content"
+    [languages.en.params]
+      blogPath = "/blog" # Path to your blog section (used by RSS)
+      madeWith = "(CC BY 4.0)"
 
-# after-dark theme options
-theme = "after-dark"
-taxonomies = [
-    # You can enable/disable RSS
-    {name = "categories", feed = true},
-    {name = "tags", feed = true},
-]
+[params]
+  # The description of your website
+  description = "ramblings of an adhd-riddled soul"
 
-[markdown]
-# Whether to do syntax highlighting
-# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
-highlight_code = true
-highlight_theme = "charcoal"
+  # The path to your favicon
+  # favicon = "images/favicon.png"
 
-[extra]
-# Put all your custom variables here
-plugins = ["org"]
-after_dark_menu = [
-    {url = "$BASE_URL", name = "bhankas"},
-]
+  # This title is used as the site_name on the Hugo's internal opengraph
+  # structured data template
+  title = "bhankas"
+
+  # Dates are displayed following the format below. For more information about
+  # formatting, see https://gohugo.io/functions/format/
+  dateFormat = "2006-01-02"
+
+  # If your blog is multilingual but you haven't translated a page, this theme
+  # will create a disabled link. By setting `hideUntranslated` to true, you can
+  # have the theme simply not show any link
+  hideUntranslated = true
+
+  # (EXPERIMENTAL) This theme is capable of dynamically generating social cards
+  # for posts that don't have `images` defined in their front matter; By setting
+  # `generateSocialCard` to false, you can prevent this behavior. For more
+  # information see layouts/partials/seo_tags.html
+  generateSocialCard = false

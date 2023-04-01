@@ -1,0 +1,8 @@
+#+title: bhankas
+#+author: anon
+#+hugo_menu: "main"
+#+hugo_weight: 1
+
+An absolutely minimal effort presence on web, that is not tied to particular 'network'.
+
+Someday, I'll spruce it up, add some flavour, make it more of my own, but we'll see.
