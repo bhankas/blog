@@ -3,6 +3,12 @@
 #+hugo_menu: "main"
 #+hugo_weight: 1
 
-An absolutely minimal effort presence on web, that is not tied to particular 'network'.
+* भंकस
+(/Marathi/)
+1. nonsense
+2. twaddle
 
-Someday, I'll spruce it up, add some flavour, make it more of my own, but we'll see.
+caveat emptor
+- all opinions are my own and not of my past/current employer's
+- no guarantees of any kind, implied or otherwise
+- read at your own +benefit+ peril
