@@ -1,9 +1,6 @@
-:PROPERTIES:
-:ID:       20230401T230119.265702
-:END:
-#+TITLE: In praise of Nix(OS) [DRAFT]
-#+SLUG: in_prais_of_nix_os
-#+DATE: <2023-04-01 Sat>
+#+title: In praise of Nix(OS) [DRAFT]
+#+slug: in_prais_of_nix_os
+#+date: <2023-04-01 Sat>
 #+filetags: 
 
 * Why
