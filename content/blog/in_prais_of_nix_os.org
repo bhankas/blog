@@ -7,7 +7,7 @@
 
 In late 2019, I had been using Ubuntu for nearly a year.
 
-I chose Ubuntu because I had a new laptop with nVidea GPU, didn't want to mess with drivers, and had read Ubuntu had the best support for the same.
+I chose Ubuntu because I had a new laptop with nVidia GPU, didn't want to mess with drivers, and had read Ubuntu had the best support for the same.
 It was correct. But 'best' does not mean perfect. I had to use a non-LTS version because the hardware was new and I needed newer kernel, the usual story.
 
 But, here came the twist. By May that year, my version of Ubuntu was off upstream support. I couldn't upgrade because my dissertation depended on machine being available, and Ubuntu upgrade was the last thing I trusted. For nearly half year, I was stuck on unsupported, very likely security-devoid software.
@@ -18,7 +18,7 @@ And so I took a vow that will not be the case as soon as I was done with my Mast
 
 Boy oh boy was it a rough ride.. I cannot understate just how bad the beginning of NixOS adventure for me was. It took me more than a day to just get the boot shit right (If it isn't clear yet, I was and still largely am, a n00b).
 
-Then, I had to get my applications and everything else in order, and by hook+crook+lot=of-copy-pasting+trial-and-error later, about a week in, I was set.
+Then, I had to get my applications and everything else in order, and by hook+crook+lot-of-copy-pasting+trial-and-error later, about a week in, I was set.
 
 * Falling in love
 
