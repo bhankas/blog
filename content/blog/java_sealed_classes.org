@@ -1,0 +1,122 @@
+#+title: Sealed Classes in Java
+#+slug: java_sealed_classes
+#+date: <2023-04-02 Sun>
+#+filetags: :java:notes:
+
+Below is my personal excerpt of [[https://openjdk.org/jeps/409][JEP 409: Sealed Classes]]
+
+* What
+- [[https://en.wikipedia.org/wiki/Tagged_union][Sum types]] (a subset of [[https://en.wikipedia.org/wiki/Algebraic_data_type][Algebraic data types]])
+- A way to restrict class hierarchy downstream by specifying which classes can extend a class.
+
+* Why
+- Exhaustive pattern matching
+- (Sort of) hierarchical Enums
+- Lock down/selectively permit hierarchy
+- More expressive type-system than access-control system
+
+* Constraints
+1. The sealed class and its permitted subclasses must belong to the same module, and, if declared in an unnamed module, to the same package.
+2. Every permitted subclass must directly extend the sealed class.
+3. Every permitted subclass must use a modifier to describe how it propagates the sealing initiated by its superclass:
+  - A permitted subclass may be declared final to prevent its part of the class hierarchy from being extended further. (Record classes are implicitly declared final.)
+  - A permitted subclass may be declared sealed to allow its part of the hierarchy to be extended further than envisaged by its sealed superclass, but in a restricted fashion.
+  - A permitted subclass may be declared non-sealed so that its part of the hierarchy reverts to being open for extension by unknown subclasses. A sealed class cannot prevent its permitted subclasses from doing this. (The modifier non-sealed is the first hyphenated keyword proposed for Java.)
+* How
+- Basic syntax
+#+begin_src java
+package com.example.geometry;
+
+public abstract sealed class Shape
+    permits com.example.polar.Circle,
+            com.example.quad.Rectangle,
+            com.example.quad.simple.Square { ... }
+#+end_src
+
+- Extensive example
+#+begin_src java
+package com.example.geometry;
+
+public abstract sealed class Shape
+    permits Circle, Rectangle, Square, WeirdShape { ... }
+
+public final class Circle extends Shape { ... }
+
+public sealed class Rectangle extends Shape
+    permits TransparentRectangle, FilledRectangle { ... }
+public final class TransparentRectangle extends Rectangle { ... }
+public final class FilledRectangle extends Rectangle { ... }
+
+public final class Square extends Shape { ... }
+
+public non-sealed class WeirdShape extends Shape { ... }
+#+end_src
+
+- Sealed interfaces
+#+begin_src java
+package com.example.expression;
+
+public sealed interface Expr
+    permits ConstantExpr, PlusExpr, TimesExpr, NegExpr { ... }
+
+public final class ConstantExpr implements Expr { ... }
+public final class PlusExpr     implements Expr { ... }
+public final class TimesExpr    implements Expr { ... }
+public final class NegExpr      implements Expr { ... }
+#+end_src
+
+- Another interface example
+#+begin_src java
+interface I {}
+sealed class C permits D, E {}
+non-sealed class D extends C {}
+final class E extends C {}
+
+void test (C c) {
+    if (c instanceof I)
+        System.out.println("It's an I");
+}
+#+end_src
+
+- Sealing and record classes
+#+begin_src java
+package com.example.expression;
+
+public sealed interface Expr
+    permits ConstantExpr, PlusExpr, TimesExpr, NegExpr { ... }
+
+public record ConstantExpr(int i)       implements Expr { ... }
+public record PlusExpr(Expr a, Expr b)  implements Expr { ... }
+public record TimesExpr(Expr a, Expr b) implements Expr { ... }
+public record NegExpr(Expr e)           implements Expr { ... }
+#+end_src
+
+- Sealed classes and pattern matching
+#+begin_src java
+Shape rotate(Shape shape, double angle) {
+    return switch (shape) {   // pattern matching switch
+        case Circle c    -> c;
+        case Rectangle r -> shape.rotate(angle);
+        case Square s    -> shape.rotate(angle);
+        // no default needed!
+    }
+}
+#+end_src
+
+- Java grammar after extension
+#+begin_src java
+NormalClassDeclaration:
+  {ClassModifier} class TypeIdentifier [TypeParameters]
+    [Superclass] [Superinterfaces] [PermittedSubclasses] ClassBody
+
+ClassModifier:
+  (one of)
+  Annotation public protected private
+  abstract static sealed final non-sealed strictfp
+
+PermittedSubclasses:
+  permits ClassTypeList
+
+ClassTypeList:
+  ClassType {, ClassType}
+#+end_src
