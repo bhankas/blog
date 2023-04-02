@@ -17,7 +17,7 @@ Because I can.
 I'll try to add some info on homepage sometime soon™.
 
 * What technology stack is being used?
-- Emacs : To write stuff down
-- orgmode : As markup of choice
-- ox-hugo : To convert =.org= files into =.md= compatible with Hugo. Hugo comes with orgmode support built-in, so that's one less thing to worry about :)
-- Github pages : To actually get this on the internet. Because I still haven't setup Cloudflare tunnel on my Pi (Big surprise there, not)
+- [[https://www.gnu.org/software/emacs/][Emacs]] : To write stuff down
+- [[https://orgmode.org/][Org mode for Emacs]] : As markup of choice
+- [[https://ox-hugo.scripter.co/][ox-hugo]] : To convert =.org= files into =.md= compatible with Hugo. Hugo comes with orgmode support built-in, so that's one less thing to worry about :)
+- [[https://pages.github.com/][Github pages]] : To actually get this on the internet. Because I still haven't setup Cloudflare tunnel on my Pi (Big surprise there, not)
