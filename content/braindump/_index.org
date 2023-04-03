@@ -1,0 +1,7 @@
+#+title: branidump
+#+hugo_menu: "main"
+#+hugo_weight: 3
+
+My personal notes on whatever I feel like taking notes about.
+
+I make no guarantees of being correct, true or useful. While corrections are welcome, the sole purpose of these notes is for my own use, and should anyone else find them useful would be but a happy coincidence.

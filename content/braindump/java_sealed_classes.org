@@ -3,8 +3,6 @@
 #+date: <2023-04-02 Sun>
 #+filetags: :java:notes:
 
-Below is my personal excerpt of [[https://openjdk.org/jeps/409][JEP 409: Sealed Classes]]
-
 * What
 - [[https://en.wikipedia.org/wiki/Tagged_union][Sum types]] (a subset of [[https://en.wikipedia.org/wiki/Algebraic_data_type][Algebraic data types]])
 - A way to restrict class hierarchy downstream by specifying which classes can extend a class.

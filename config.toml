@@ -11,14 +11,21 @@ defaultContentLanguage = 'en'
 enableRobotsTXT = true
 
 [menu]
+
 [[menu.main]]
   name = "blog"
   pageRef = "/blog"
   weight = 1
+
+[[menu.main]]
+  name = "braindump"
+  pageRef = "/braindump"
+  weight = 2
+
 [[menu.main]]
   name = "reading"
   pageRef = "/reading"
-  weight = 2
+  weight = 3
 
 # Setup syntax highlighting without inline styles. For more information about
 # why you'd want to avoid inline styles, see
