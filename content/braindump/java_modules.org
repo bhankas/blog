@@ -1,0 +1,34 @@
+#+title: Java Modules [draft]
+#+slug: java_modules
+#+date: <2023-04-03 Mon>
+#+filetags: :braindump:java:
+
+* What
+- Explicit declaration of imports and exports of Java code sections
+
+* Why
+- Tame the chaos of classpath by making direct and indirect imports/dependency explicit and restricted
+
+* How
+- Add =module-info.java= file at module root
+  #+begin_src java
+module modulename {
+    requires org.baz.qux;
+
+    requires public java.logging;
+    requires public java.xml;
+
+    exports com.foo.bar.alpha;
+    exports com.foo.bar.beta;
+}
+  #+end_src
+
+* Notes
+- =module-info.java= is valid syntax of Java and not any other DSL
+  - This allows having same information at both compile-time and run-time
+  - Also enables module reflection at runtime
+
+* References
+- [[https://openjdk.org/jeps/261][JEP 261: Module System]]
+- [[https://openjdk.org/projects/jigsaw/spec/sotms/][The State of the Module System]]
+- [[https://www.oracle.com/in/corporate/features/understanding-java-9-modules.html][Understanding Java 9 Modules | Oracle India]]
