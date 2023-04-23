@@ -1,0 +1,56 @@
+:PROPERTIES:
+:ID:       20230423T212427.405541
+:END:
+#+title: Deploying Doom-emacs config via NixOS+home-manager
+#+slug: deploying_doom_emacs_config_via_nixos_home_manager
+#+date: <2023-04-23 Sun>
+#+filetags: nix
+
+* Problem Statement
+[[https://github.com/doomemacs/doomemacs][doomemacs]] is a configuration framework for GNU Emacs. I quite like it for its declarative config format, good defaults and overall user-friendliness.
+
+- Doomemacs recommends re-generating or 'sync'-ing its declarative config with active Emacs config state every time system is updated. I believe this is recommended because quite a few Emacs packages use APIs provided by some other native code, like [[https://www.djcbsoftware.nl/code/mu/mu4e.html][mu4e]], [[https://github.com/akermu/emacs-libvterm][vterm]] or [[https://github.com/minad/jinx][jinx]]. I use [[https://nixos.org][NixOS]] as my OS of choice, which is also a declarative in nature. Now the problem was, NixOS encourages playing with your system by providing fearless upgrades and rollbacks. It means I tend to update my system often. Emacs /also/ encourages tinkering, by being so damn introspectable and moldable piece of software. The result is they are both being updated often and hence I'm often running 'doom sync' after every nixos update. This is not fun.
+- Problem #2 is keeping track of 2 separate repositories, which also isn't fun. Because both NixOS and Emacs have a tendency of taking over your entire digital existence, I've been wanting to merge them for a while now. There are [[https://github.com/nix-community/nix-doom-emacs][preexisting solutions]], but they are quite imperfect at the moment (not to mention severely outdated with upstream). So, I was stuck running 'doom sync' and tracking two repos. Again, not fun.
+
+* Constraints
+- 'doom sync' must run after every NixOS update automatically
+- Bonus: Track both NixOS and Doomemacs config in single repo.
+
+* The Solution
+- While merging my doomemacs config with pre-existing NixOS config repo, I wanted to preserve commit history of both, and merge them with preferred file relocation.
+- Thankfully, [[https://gist.github.com/bhankas/422c34db2e987d4dc3f243e26ba156a3][I had already done this before]] :). I made minor changes and the repos were merged just how I wanted.
+- As for running doom sync, I found that [[https://github.com/nix-community/home-manager][home-manager]] has an option to automatically link any file to any location, and even run any command after it is run.
+  The total config change was tiny:
+
+#+begin_src nix
+home = {
+  file = {
+    doom = {
+      enable = true;
+      executable = false;
+      recursive = true;
+      source = ./doom;
+      target = "/home/bhankas/.doom.d";
+    };
+  };
+  activation.doom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ -x "/home/bhankas/.config/emacs/bin/doom" ]
+          /home/bhankas/.config/emacs/bin/doom sync
+    fi
+  '';
+};
+#+end_src
+
+* Effects
+** Pros
+- Emacs config is now tacked /and/ deployed by NixOS!
+- Manually running 'doom sync' is a thing of the past
+  - I only need to remember a single command to get the whole thing rolling :)
+- Quirks of nix-doom-emacs are not present
+- Making changes across OS /and/ Emacs simultaneously is a breeze.
+** Cons
+- Doomemacs installation and sync is still performed by doom itself, so that part is still imperatively tracked.
+  I might be able to track doom repo and link it by flake+home-manager, but it can wait.
+- Since changing Emacs config now requires deploying entire NixOS again, this is not the most efficient approach. On an SSD this is not as noticeable, but on spinning rust I imaging this would be borderline 'velocity-killer'.
+
+Anyway, I'm quite happy how this turned out, and am once again quite glad to have made time investment into NixOS.
