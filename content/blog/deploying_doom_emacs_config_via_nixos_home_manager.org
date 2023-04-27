@@ -7,7 +7,7 @@
 [[https://github.com/doomemacs/doomemacs][doomemacs]] is a configuration framework for GNU Emacs. I quite like it for its declarative config format, good defaults and overall user-friendliness.
 
 - Doomemacs recommends re-generating or 'sync'-ing its declarative config with active Emacs config state every time system is updated. I believe this is recommended because quite a few Emacs packages use APIs provided by some other native code, like [[https://www.djcbsoftware.nl/code/mu/mu4e.html][mu4e]], [[https://github.com/akermu/emacs-libvterm][vterm]] or [[https://github.com/minad/jinx][jinx]]. I use [[https://nixos.org][NixOS]] as my OS of choice, which is also a declarative in nature. Now the problem was, NixOS encourages playing with your system by providing fearless upgrades and rollbacks. It means I tend to update my system often. Emacs /also/ encourages tinkering, by being so damn introspectable and moldable piece of software. The result is they are both being updated often and hence I'm often running 'doom sync' after every nixos update. This is not fun.
-- Problem #2 is keeping track of 2 separate repositories, which also isn't fun. Because both NixOS and Emacs have a tendency of taking over your entire digital existence, I've been wanting to merge them for a while now. There are [[https://github.com/nix-community/nix-doom-emacs][preexisting solutions]], but they are quite imperfect at the moment (not to mention severely outdated with upstream). So, I was stuck running 'doom sync' and tracking two repos. Again, not fun.
+- Problem #2 is keeping track of 2 separate repositories, which also isn't fun. Because both NixOS and Emacs have a tendency of taking over your entire digital existence, I've been wanting to merge them for a while now, but was stuck running 'doom sync' and tracking two repos[fn:1]. Again, not fun.
 
 * Constraints
 - 'doom sync' must run after every NixOS update automatically
@@ -38,7 +38,7 @@ home = {
 };
 #+end_src
 
-* Effects
+* Results
 ** Pros
 - Emacs config is now tacked /and/ deployed by NixOS!
 - Manually running 'doom sync' is a thing of the past
@@ -51,3 +51,6 @@ home = {
 - Since changing Emacs config now requires deploying entire NixOS again, this is not the most efficient approach. On an SSD this is not as noticeable, but on spinning rust I imaging this would be borderline 'velocity-killer'.
 
 Anyway, I'm quite happy how this turned out, and am once again quite glad to have made time investment into NixOS.
+
+
+[fn:1] There are [[https://github.com/nix-community/nix-doom-emacs][preexisting solutions]], but they are quite imperfect at the moment (not to mention severely outdated with upstream).
