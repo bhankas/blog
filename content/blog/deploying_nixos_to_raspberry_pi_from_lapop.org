@@ -1,0 +1,86 @@
+#+title: Deploying NixOS to Raspberry Pi from laptop
+#+slug: deploying_nixos_to_raspberry_pi_from_lapop
+#+date: <2023-05-02 Tue>
+#+filetags: nix
+
+There's a little Raspberry Pi 4B ticking along in my home, quietly [[https://pi-hole.net/][reducing adverts within my network]],
+[[https://syncthing.net/][backing up important stuff]], [[https://navidrome.org][serving my music collection to guests]] and [[https://grafana.com/][generating pretty graphs]] while at it.
+
+Thanks to NixOS and its [[https://search.nixos.org/options?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=system.autoUpgrade][amazing options]], the machine checks for updated at 4AM every day, and if I have made any changes to its config,
+including updating to newer version of NixOS, it proceeds to build the system with latest changes. Then, if the updates require, and /only if/ the updates require,
+it reboots the system. On average, the whole process 4-10 minutes.
+
+So far so good, this machinery has kept the system going strong for more than a year, and I've barely kept any checks on it. NixOS simply refuses to build if there are any update failures, It Just Works™.
+
+But, I'm a tinkerer at heart, and when I'm mucking about with my Pi, say for example trying to get [[https://www.zabbix.com/][Zabbix]] running[fn:1], I want my Pi to build and deploy my config changes instantly, and not wait for next 4 AM. And I want to do this withoug SSHing in, because reasons.
+
+You'd think it must be easy with NixOS, and you'd be right, of course.
+
+Almost.
+
+You see, Nix, in its ever-glorious genius, has no 'official' mechanism for doing this kind of DevOps[fn:2]. [[https://github.com/NixOS/nixops][There]] [[https://github.com/arnarg/pushnix][are]] [[https://github.com/MatthewCroughan/nixinate][bunch]] [[https://cgit.krebsco.de/krops/about/][of]] [[https://github.com/DBCDK/morph][these]] [[https://github.com/rapenne-s/bento/][thingies]] sprouted like mushrooms after rain. So challenge #1 is actually selecting one that fits my needs. Thankfully, [[https://dataswamp.org/~solene/][Solene]] has [[https://www.youtube.com/watch?v=KOGmAsWzzc8][already done the survey work]]!
+I won't go into details, but for me it came down to [[https://github.com/zhaofengli/colmena][Colmena]] and [[https://github.com/serokell/deploy-rs][deploy-rs]]. I chose to go with the latter for few reasons:
+
+1. It reuses the already defined =nixOsConfigurations= attribute from my flake
+2. It does not need a separate =hive.nix= or anything, just little modification to existing =flake.nix=
+3. Its written in Rust[fn:3] :p
+
+Colmena does have an edge for deploying secrets outside the =nix-store=, but I can live with that for now.
+
+With that said and done, I set about the mission of deploying to my Pi with a single command[fn:4]. There were a few lessons along the way:
+
+1. SSH key used by =deploy-rs= /MUST NOT/ be password protected. It will keep on rolling forever, never being able to complete.
+2. If the CPU architecture of target system(aarch64, in this case) differs from source(x86_64, my laptop, because not everyone has monies for fancy fruits), then the source machine must have =binfmt= emulation enabled:
+   #+begin_src nix
+boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+   #+end_src
+3. Thats it!
+
+After all, the entire config ended up pretty small:
+#+begin_src nix
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    deploy-rs.url = "github:serokell/deploy-rs";
+  };
+
+  outputs =
+    { self, nixpkgs, deploy-rs, ... }:
+    {
+      nixosConfigurations = {
+        # My Pi
+        pi = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+        };
+      };
+
+      deploy.nodes = {
+        pi = {
+          hostname = "pi";
+          fastConnection = true;
+          remoteBuild = true;
+          profiles.system = {
+            sshUser = "bhankas";
+            user = "root";
+            path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.pi;
+          };
+        };
+      };
+
+      # This is highly advised, and will prevent many possible mistakes
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+    };
+}
+#+end_src
+
+Mind the '~aarch64-linux~' at =deploy.nodes.pi.profiles.system.path=, it was easy to miss, and quite crucial
+
+The =checks= thing at the bottom is pretty nifty too. If the deployment and/or subsequent activation fails for some reason, then the system is automatically rolled back to previously known working state. Pretty nice :)
+
+[fn:1] Even though I already have a nice looking SystemD+Prometheus+Grafana already running :p
+
+[fn:2] nixops gets close, but oh my gawd I'm not using that thing. Yet.
+
+[fn:3] Colmena is also written in Rust, but its slightly more complex than deploy-rs to configure.
+
+[fn:4] Yes, I know, =nixos-rebuild= can do the same, and the syntax is not that complex, and I have used it in past and it works. But then, I'd have to admit on wasting a Sunday and playing with cool toys is what [[https://bhankas.org][this whole thing]] is about.
