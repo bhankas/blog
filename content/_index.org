@@ -8,7 +8,7 @@
 1. nonsense
 2. twaddle
 
-caveat emptor
+/caveat lector/:
 - all opinions are my own and not of my past/current employer's
 - no guarantees of any kind, implied or otherwise
 - read at your own +benefit+ peril
