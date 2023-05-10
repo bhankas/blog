@@ -1,0 +1,12 @@
+#+title: Adding blog analytics: GoatCounter
+#+slug: adding_blog_analytics_goatcounter
+#+date: <2023-05-10 Wed>
+#+filetags: 
+
+So, on the usual HN reading, I went through the [[https://eli.thegreenplace.net/2023/using-goatcounter-for-blog-analytics/][rabbithole]] and found a perfect analytics platform: [[https://github.com/arp242/goatcounter][GoatCounter]].
+
+It is a single binary, written in Go, easy to self-host, quick to build with NixOS, and collects so little data, it does not even need GDPR notice![fn:1]
+
+So, I'm trying this out. Of course, if uBlock origin decides to block it, out it goes. We'll see.
+
+[fn:1] https://goatcounter.com/help/gdpr
