@@ -1,0 +1,99 @@
+#+title: Easy mode encryption for orgmode with age.el
+#+slug: easy_mode_encryption_for_orgmode_with_age_el
+#+date: <2023-05-19 Fri>
+#+filetags: 
+
+Emacs and orgmode support encryption [[https://orgmode.org/worg/org-tutorials/encrypting-files.html][out-of-the-box]], using GnuPG.
+
+Like most mortals, I got scared of GPG after staring at its [[https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key][setup]] instructions in one afternoon[fn:1].
+After couple of years, I discovered '[[https://github.com/FiloSottile/age][age]]'[fn:2] for managing secrets in NixOS[fn:3]. Age was easy enough to setup in single afternoon, and solid enough to keep running in background for more than a year without any intervention on my part. My kind of tech!
+
+So, when I found out that same ol' =age= can be used to manage, encrypt, and decrypt my orgmode notes on the fly, I wanted it.
+
+Enter [[https://github.com/anticomputer/age.el][age.el]].
+
+=age.el= uses same emacs and orgmode infrastructure that utilises GPG encrypted files, and makes it work with ~age~.
+It also integrated with ~org-roam~ out-of-the-box, and pretty much Just Works™.
+
+The only drawback I found was that a file must be encrypted before opening it. =age.el= does not encrypt a plaintext file by itself, on the first run.
+So, I wrote a tiny emacs-lisp function to do the same:
+
+#+begin_src emacs-lisp
+(defun bhankas-org-age-encrypt-and-replace ()
+  "Replace current org file with age-encrypted version"
+  (interactive)
+  (let* ((current-file-name (buffer-file-name))
+         (encr-file-name (-> (buffer-file-name)
+                             (string-trim)
+                             (concat ".age"))))
+    (if (string-suffix-p ".org" current-file-name)
+        (progn
+          (shell-command (concat "rage -R ~/.ssh/some_key.pub -e " current-file-name " -o " encr-file-name))
+          (doom/delete-this-file current-file-name t)
+          (find-file encr-file-name)))))
+#+end_src
+
+Now, this function:
+1. checks if the current file is an org-mode file (we don't want to accidently encrypt anything else, more on that in a moment)
+2. encrypts it with =rage= (because unlike =age=, it supports prompt for ssh key password)
+3. deletes the existing, unencrypted file (because whats the use of encryption if you're just going to keep the unencrypted version around.. And also to avoid conflicts in =org-roam= database)
+4. opens the new encrypted file, to make it seamless for the user.
+
+This required some tiny modifications in rest of the config to make it even more seamless:
+
+#+begin_src emacs-lisp
+(use-package! org-roam
+  :after (org age)
+  :init
+  (add-to-list 'auto-mode-alist '("\\.org\\.age" . org-mode)))
+
+(use-package! age
+  :after (org)
+  :commands (age-file-enable)
+  :init
+  (setq! age-program "rage"
+         age-default-identity "~/.ssh/some_key"
+         age-default-recipient "~/.ssh/some_key.pub")
+  (age-file-enable))
+#+end_src
+
+This takes care of dependency and loading order.[fn:4]
+
+However, this still requires manually doing =M-x bhankas-org-age-encrypt-and-replace=. That is fine and desired, even, for existing nodes, but I wanted further automation of notes being encrypted. 100% of my org documents are created via =org-capture=[fn:5], so the natural place and time to encrypt notes are right when they are created. But, I also wanted this to happen for only specific capture templates[fn:6].
+
+With bit of fiddling[fn:7], this is also done:
+
+#+begin_src emacs-lisp
+(defun bhankas-org-encrypt-for-template ()
+  "Age-encrypt currently captured org-template"
+  (let ((desc (plist-get org-capture-plist :description)))
+    (if (or (string= desc "daily")
+            (string= desc "secret"))
+        (progn
+          (message "encrypting org document for template %s" desc)
+          (save-buffer)
+          (bhankas-org-age-encrypt-and-replace)))))
+
+(use-package! org-roam
+  :init
+  (add-hook! '(org-capture-after-finalize-hook org-roam-dailies-find-file-hook)
+             :append
+             #'bhankas-org-encrypt-for-template))
+#+end_src
+
+And that's it!
+
+
+[fn:1] The setup itself is not that intimidating, but the prospect of managing those keys forever going forward... nope.
+
+[fn:2] ..and its API compatible replacement in Rust: '[[https://github.com/str4d/rage/][rage]]'.
+
+[fn:3] via fantastic [[https://github.com/ryantm/agenix][agenix]].
+
+[fn:4] Please note that =use-package!= macro comes from fantastic =doom-emacs=. Non-doom-users can simply replace it with =use-package= which is included in Emacs 29+.
+
+[fn:5] Or its cousin [[https://www.orgroam.com/manual.html#The-Templating-System][org-roam-capture]].
+
+[fn:6] like daily notes and some specific, personal notes, but not the generic topic based notes, those can be public and I want to be able to access them as plaintext docs.
+
+[fn:7] And ChatGPT ;)
