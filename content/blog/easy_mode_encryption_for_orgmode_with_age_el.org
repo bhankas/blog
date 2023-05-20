@@ -3,10 +3,14 @@
 #+date: <2023-05-19 Fri>
 #+filetags: 
 
+/Update 2023-05-20 : Explain use of SSH keys by age and modify elisp code to accommodate how org-roam generates daily notes./
+
 Emacs and orgmode support encryption [[https://orgmode.org/worg/org-tutorials/encrypting-files.html][out-of-the-box]], using GnuPG.
 
 Like most mortals, I got scared of GPG after staring at its [[https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key][setup]] instructions in one afternoon[fn:1].
 After couple of years, I discovered '[[https://github.com/FiloSottile/age][age]]'[fn:2] for managing secrets in NixOS[fn:3]. Age was easy enough to setup in single afternoon, and solid enough to keep running in background for more than a year without any intervention on my part. My kind of tech!
+
+For background, instead of having to create and manage new public-private keys for GPG, =age= can (re)use existing ssh keys. Most programmers are familiar and used to managing SSH keys, and since this is something we already have to, its nice to include another use case with them. I also find SSH keys more easy to reason about, with simple straightforward interactions.  This is why I like and use =age=.
 
 So, when I found out that same ol' =age= can be used to manage, encrypt, and decrypt my orgmode notes on the fly, I wanted it.
 
@@ -25,12 +29,20 @@ So, I wrote a tiny emacs-lisp function to do the same:
   (let* ((current-file-name (buffer-file-name))
          (encr-file-name (-> (buffer-file-name)
                              (string-trim)
-                             (concat ".age"))))
-    (if (string-suffix-p ".org" current-file-name)
+                             (concat ".age")))
+         (encr-file-exists nil))
+    (when (string-suffix-p ".org" current-file-name)
+      (if (file-exists-p encr-file-name)
+          (progn
+            (message "Using existing encrypted version instead of overwriting")
+            (setq encr-file-exists t))
         (progn
+          (message "Encrypting file %s" current-file-name)
           (shell-command (concat "rage -R ~/.ssh/some_key.pub -e " current-file-name " -o " encr-file-name))
-          (doom/delete-this-file current-file-name t)
-          (find-file encr-file-name)))))
+          (setq encr-file-exists t)))
+      (when encr-file-exists
+        (doom/delete-this-file current-file-name t)
+        (find-file encr-file-name)))))
 #+end_src
 
 Now, this function:
@@ -90,7 +102,7 @@ And that's it!
 
 [fn:3] via fantastic [[https://github.com/ryantm/agenix][agenix]].
 
-[fn:4] Please note that =use-package!= macro comes from fantastic =doom-emacs=. Non-doom-users can simply replace it with =use-package= which is included in Emacs 29+.
+[fn:4] Please note that =use-package!= (notice the ~!~) macro comes from fantastic =doom-emacs=. Non-doom-users can simply replace it with =use-package= which is included in Emacs 29+. There are some other functions/macros used in this code that also come from doom-emacs, such as =doom/delete-this-file=, =setq!= and =add-hook!=. For the most part they are fairly identical to their non-! counterparts, and are drop-in replacements.
 
 [fn:5] Or its cousin [[https://www.orgroam.com/manual.html#The-Templating-System][org-roam-capture]].
 
