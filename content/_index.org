@@ -4,8 +4,7 @@
 #+hugo_weight: 1
 
 * भंकस
-(/[[https://en.wikipedia.org/wiki/Marathi_language][Marathi]]/)
-[[https://en.wiktionary.org/wiki/Wiktionary:International_Phonetic_Alphabet][IPA]]^{([[https://en.wikipedia.org/wiki/Marathi_phonology][key]])}: ​/b^???k?s/
+(/Marathi/)
 1. nonsense
 2. twaddle
 
