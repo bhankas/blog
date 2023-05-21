@@ -1,0 +1,32 @@
+#+title: Emacs: The Love Story
+#+slug: emacs_the_love_story
+#+date: <2023-05-21 Sun>
+#+filetags: 
+#+draft: true
+
+The love story with Emacs
+How and why
+- Introspectability
+- Giant security hole, secured by strong culture for FLOSS
+- Unmatched malleability from Lisp!
+  - Integration with Nix!
+    - Honorable mention to yakspkgs
+- Mature and adult treatment of users
+- Documentation!
+- All the tooling for Elisp available at fingertips
+- ChatGPT :p
+- Sprawling configuration over years, supported by modern practices:
+  - doom
+  - straight.el
+  - use-package
+  - dash.el
+- Packages (small intro, should ideally be their separate posts, preferrably in same series)
+  - org-mode
+    - org-roam
+    - age.el
+    - org-babel
+    - ox-hugo
+  - magit
+  - mu4e
+  - elfeed
+  - gnus
