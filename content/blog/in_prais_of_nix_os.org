@@ -2,7 +2,7 @@
 #+slug: in_prais_of_nix_os
 #+date: [2023-04-01 Sat]
 #+filetags:
-#+hugo_draft: true
+#+draft: true
 
 * Why
 
