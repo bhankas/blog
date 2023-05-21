@@ -1,7 +1,8 @@
 #+title: In praise of Nix(OS) [DRAFT]
 #+slug: in_prais_of_nix_os
 #+date: [2023-04-01 Sat]
-#+filetags: 
+#+filetags:
+#+hugo_draft: true
 
 * Why
 
