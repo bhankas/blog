@@ -98,7 +98,7 @@ With bit of fiddling[fn:8], this is also done:
              #'bhankas-org-encrypt-for-template))
 #+end_src
 
-And that's it!
+And that's it[fn:9]!
 
 [fn:1] The setup itself is not that intimidating, but the prospect of managing those keys forever going forward... nope.
 
@@ -115,3 +115,5 @@ And that's it!
 [fn:7] like daily notes and some specific, personal notes, but not the generic topic based notes, those can be public and I want to be able to access them as plaintext docs.
 
 [fn:8] And ChatGPT ;)
+
+[fn:9] Note that while this works very well, org-roam still makes few assumptions that cause unexpected behavior. In particular, capturing to daily notes does not work, because org-roam does not recognise presence of ~org.age~ extension in daily notes. I've tried ~(setq org-roam-file-extenstions '("org" "org.age"))~ without luck. I might just open a bug report, but want to be sure first.
