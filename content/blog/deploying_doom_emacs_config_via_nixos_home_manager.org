@@ -1,4 +1,4 @@
-#+title: Deploying Doom-emacs config via NixOS+home-manager
+#+title: Deploying Doom-emacs config via home-manager
 #+slug: deploying_doom_emacs_config_via_nixos_home_manager
 #+date: [2023-04-23 Sun]
 #+filetags: nix

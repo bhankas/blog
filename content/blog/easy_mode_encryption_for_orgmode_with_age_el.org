@@ -1,4 +1,4 @@
-#+title: Easy mode encryption for orgmode with age.el
+#+title: Easy automatic encryption for orgmode with age.el
 #+slug: easy_mode_encryption_for_orgmode_with_age_el
 #+date: <2023-05-19 Fri>
 #+filetags: 
@@ -39,7 +39,8 @@ So, I wrote a tiny emacs-lisp function to do the same:
         (progn
           (message "Encrypting file %s" current-file-name)
           (shell-command (concat "rage -R ~/.ssh/some_key.pub -e " current-file-name " -o " encr-file-name))
-          (setq encr-file-exists t)))
+          (when (file-exists-p encr-file-name)
+            (setq encr-file-exists t))))
       (when encr-file-exists
         (doom/delete-this-file current-file-name t)
         (find-file encr-file-name)))))
@@ -50,6 +51,10 @@ Now, this function:
 2. encrypts it with =rage= (because unlike =age=, it supports prompt for ssh key password)
 3. deletes the existing, unencrypted file (because whats the use of encryption if you're just going to keep the unencrypted version around.. And also to avoid conflicts in =org-roam= database)
 4. opens the new encrypted file, to make it seamless for the user.
+
+There are few edge cases handled here, with defensive checks:
+1. Org-roam does not check if the ~.org.age~ file exists for daily notes. This is checked here, and the daily node is automatically removed in favor of existing encrypted version instead of overwriting it.
+2. After encryption command is run, the existence of encrypted version is checked before removing original plaintext file before removing it, so as to avoid data loss[fn:4].
 
 This required some tiny modifications in rest of the config to make it even more seamless:
 
@@ -69,11 +74,11 @@ This required some tiny modifications in rest of the config to make it even more
   (age-file-enable))
 #+end_src
 
-This takes care of dependency and loading order.[fn:4]
+This takes care of dependency and loading order.[fn:5]
 
-However, this still requires manually doing =M-x bhankas-org-age-encrypt-and-replace=. That is fine and desired, even, for existing nodes, but I wanted further automation of notes being encrypted. 100% of my org documents are created via =org-capture=[fn:5], so the natural place and time to encrypt notes are right when they are created. But, I also wanted this to happen for only specific capture templates[fn:6].
+However, this still requires manually doing =M-x bhankas-org-age-encrypt-and-replace=. That is fine and desired, even, for existing nodes, but I wanted further automation of notes being encrypted. 100% of my org documents are created via =org-capture=[fn:6], so the natural place and time to encrypt notes are right when they are created. But, I also wanted this to happen for only specific capture templates[fn:7].
 
-With bit of fiddling[fn:7], this is also done:
+With bit of fiddling[fn:8], this is also done:
 
 #+begin_src emacs-lisp
 (defun bhankas-org-encrypt-for-template ()
@@ -95,17 +100,18 @@ With bit of fiddling[fn:7], this is also done:
 
 And that's it!
 
-
 [fn:1] The setup itself is not that intimidating, but the prospect of managing those keys forever going forward... nope.
 
 [fn:2] ..and its API compatible replacement in Rust: '[[https://github.com/str4d/rage/][rage]]'.
 
 [fn:3] via fantastic [[https://github.com/ryantm/agenix][agenix]].
 
-[fn:4] Please note that =use-package!= (notice the ~!~) macro comes from fantastic =doom-emacs=. Non-doom-users can simply replace it with =use-package= which is included in Emacs 29+. There are some other functions/macros used in this code that also come from doom-emacs, such as =doom/delete-this-file=, =setq!= and =add-hook!=. For the most part they are fairly identical to their non-! counterparts, and are drop-in replacements.
+[fn:4] I did lose couple of daily notes before I wised up to what was happening. The defensive coding might seem excessive, but automation should enhance, and not cause more anxiety.
 
-[fn:5] Or its cousin [[https://www.orgroam.com/manual.html#The-Templating-System][org-roam-capture]].
+[fn:5] Please note that =use-package!= (notice the ~!~) macro comes from fantastic =doom-emacs=. Non-doom-users can simply replace it with =use-package= which is included in Emacs 29+. There are some other functions/macros used in this code that also come from doom-emacs, such as =doom/delete-this-file=, =setq!= and =add-hook!=. For the most part they are fairly identical to their non-! counterparts, and are drop-in replacements.
 
-[fn:6] like daily notes and some specific, personal notes, but not the generic topic based notes, those can be public and I want to be able to access them as plaintext docs.
+[fn:6] Or its cousin [[https://www.orgroam.com/manual.html#The-Templating-System][org-roam-capture]].
 
-[fn:7] And ChatGPT ;)
+[fn:7] like daily notes and some specific, personal notes, but not the generic topic based notes, those can be public and I want to be able to access them as plaintext docs.
+
+[fn:8] And ChatGPT ;)
