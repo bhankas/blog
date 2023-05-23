@@ -12,6 +12,10 @@ After couple of years, I discovered '[[https://github.com/FiloSottile/age][age]]
 
 For background, instead of having to create and manage new public-private keys for GPG, =age= can (re)use existing ssh keys. Most programmers are familiar and used to managing SSH keys, and since this is something we already have to, its nice to include another use case with them. I also find SSH keys more easy to reason about, with simple straightforward interactions.  This is why I like and use =age=.
 
+#+begin_quote
+Please be aware, that =age=, while being convenient and seeing increasing adoption, still hasn't had an independent audit. If your threat model requires higher scrutiny, =age= might not cut it.
+#+end_quote
+
 So, when I found out that same ol' =age= can be used to manage, encrypt, and decrypt my orgmode notes on the fly, I wanted it.
 
 Enter [[https://github.com/anticomputer/age.el][age.el]].
