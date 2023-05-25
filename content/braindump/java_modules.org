@@ -1,6 +1,8 @@
 #+title: Java Modules [draft]
 #+slug: java_modules
 #+date: <2023-04-03 Mon>
+#+draft: true
+#+hugo_draft: true
 #+filetags: :braindump:java:
 
 * What
