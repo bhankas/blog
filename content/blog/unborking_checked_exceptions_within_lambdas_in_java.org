@@ -1,0 +1,89 @@
+#+title: Unborking Checked Exceptions within Lambdas in Java
+#+slug: unborking_checked_exceptions_within_lambdas_in_java
+#+date: <2023-05-26 Fri>
+#+hugo_auto_set_lastmod: t
+#+filetags:  java
+
+I'll leave describing [[https://openjdk.org/jeps/126][lambdas]] and [[https://docs.oracle.com/javase/specs/jls/se8/html/jls-11.html][checked exceptions]] to better people.
+
+For years, it has irked me the way lambdas (henceforth called closures) handle, or not really handle checked exceptions in Java.
+
+In short, closures /cannot/ throw checked exceptions, they must be converted to unchecked ones. For example,
+
+#+begin_src java
+public class Foo {
+    public static String toString(Foo fooObj) {
+        return "foo!";
+    }
+
+    public static Foo parseFoo(String str) throws ParseException{
+        return fooMapper.parse(foo);
+    }
+}
+#+end_src
+
+If we call both these methods within closures, say those passed to =Optional=, it will look like this:
+
+#+begin_src java
+public static Foo incepFoon(Foo fooObj) {
+    return Optional.ofNullable(fooObj)
+        .map(Foo::toString)
+        .map(str -> {
+                try {
+                    return Foo.parseFoo(str);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+        .orElse(null);
+}
+#+end_src
+
+Notice how calling =Foo::parse= is nice and simple, but calling =Foo::parseFoo= involves making a temporary variable, wrapping with try-catch block and for coup de grâce, converting the actual exception to =RuntimeException=.
+
+The last part, in particular is cause of my scorn. Oracle really screwed up here while designing lambdas. Checked exceptions are alternate API paths, and should be gracefully handled. When a checked exception is converted to a runtime exception, we lose out on important information. We are not able to gracefully bubble the exception up the stack, nor can we understand what exactly went wrong because not all information is preserved during casting. Even worse, we cannot rely on method signature alone to tell us what exceptions should be expected by the caller.
+
+For many months, every time I had to write try-catch within closures, I hated looking at the code afterwards.
+
+Last night, after nearly 3 hours of googling and struggling with Java's type system, I finally found [[https://stackoverflow.com/a/30974991][this gem]] (thanks, stackoverflow!):
+
+#+begin_src java
+public final class LambdaExceptionUtil {
+    @FunctionalInterface
+    public interface Function_WithExceptions<T, R, E extends Exception> {
+        R apply(T t) throws E;
+    }
+
+    public static <T, R, E extends Exception> Function<T, R> rethrowFunction(Function_WithExceptions<T, R, E> function) throws E  {
+        return t -> {
+            try {
+                return function.apply(t);
+            } catch (Exception exception) {
+                throwActualException(exception);
+                return null;
+            }
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <E extends Exception> void throwActualException(Exception exception) throws E {
+        throw (E) exception;
+    }
+
+}
+#+end_src
+
+This weird looking code is simple typechecking with generics. With this, above example becomes:
+
+#+begin_src java
+public static Foo incepFoon(Foo fooObj) throws ParseException {
+    return Optional.ofNullable(fooObj)
+        .map(Foo::toString)
+        .map(rethrowFunction(Foo::parseFoo))
+        .orElse(null);
+}
+#+end_src
+
+Simple, elegant, useful! Notice how both method references look nearly identical, there's no unnecessary try-catch clutch, and finally, see that method signature now includes =throws ParseException=! If it is not present, the compiler complains[fn:1] until that particular type of exception is added to the signature!
+
+[fn:1] Java's generics are pretty much entirely compile-time, and incredibly useful for (nearly) exhaustive static type-checking.
