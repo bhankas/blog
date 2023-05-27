@@ -49,7 +49,8 @@ enableRobotsTXT = true
     contentDir = "content"
     [languages.en.params]
       blogPath = "/blog" # Path to your blog section (used by RSS)
-      madeWith = "(CC BY 4.0)"
+      madeWith = "https://www.gnu.org/software/emacs/"
+      license = "(CC BY 4.0)"
 
 [params]
   # The description of your website
