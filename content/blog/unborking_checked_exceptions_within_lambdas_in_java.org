@@ -1,4 +1,4 @@
-#+title: Unborking Checked Exceptions within Lambdas in Java
+#+title: Unborking Checked Exceptions in Java Lambda expressions
 #+slug: unborking_checked_exceptions_within_lambdas_in_java
 #+date: <2023-05-26 Fri>
 #+hugo_auto_set_lastmod: t
