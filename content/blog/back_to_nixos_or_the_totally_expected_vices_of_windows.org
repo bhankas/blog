@@ -1,0 +1,50 @@
+#+title: Back to NixOS or (The totally expected vices of Windows)
+#+slug: back_to_nixos_or_the_totally_expected_vices_of_windows
+#+date: <2023-08-22 Tue>
+#+hugo_auto_set_lastmod: t
+#+filetags: 
+
+To no-one's surprise, as of this week, I'm back to using NixOS as my primary operating system.
+
+* The background
+For many years, I've been an ardent user of Linux for my personal computing. It was just better development environment than Windows and cheaper (and possible) than macOS for a middle-class student/early-career engineer. The tendency to advocate for Linux also made me the go-to Linux guy in previous job, although I don't count that as negative.
+
+Then, last June, my previous MSI laptop had unexpected disassembly during an accident. I got a new ASUS Zenbook 14 OLED (UX3402) and have really liked the machine, but out of sheer laziness, kept using stock Windows 11 that it came with. WSL2 is alright, mostly gets the job done, and with WSL-g, even allows GUI apps that support Wayland natively.
+
+But over more than past year, there have been many a papercuts with Windows that just kept making it a non-pleasant experience:
+
+- WSL's GUI support is, in single word, /existent/. It is better than nothing, but leaves a lot to desire.
+- WSL has more problems, like no support to follow VM symlinks from Windows applications. As a NixOS user, this was not very useful.
+- WSL often breaks with clipboard access across environments, as well as opening links from within WSL-g to Windows.
+- Windows often tends to ignore user wishes, and just resets the settings (looking at you, Cortana).
+- Overall desktop environment of Windows, while better than whatever macOS has, is still a toddler compared to mature DEs like KDE Plasma or even plain window managers like Sway.
+- Privacy aspects (or lack thereof) of Windows are a significant cause of scorn every time I have to use it.
+- Windows, even with WSL2 is just a crappy development environment compared to either Linux or macOS.
+
+* Back to NixOS
+NixOS has been my Linux distro of choice for past 4 years (where'd the time go!). Even my WSL2 env was using the awesome [[https://github.com/nix-community/NixOS-WSL][NixOS-WSL]] all the time.
+
+Since the config was already mostly complete, it was barely any effort to get the whole thing ready for bare-metal (see how tiny the [[https://git.bhankas.org/payas/nixos/compare/54acf430c70a686c4d6c384ef8d6de23e28bdeb4..a51d4871462455461eeed225c81c73ece5447fbe][diff]] is!).
+
+Overall, I was done within an hour with everything I wanted. (I'll try to get another post out for hardware specific changes I had to make, although they too, were tiny).
+
+* The good
+I like how anything that gets tweaked/fixed stays fixed.
+
+I like how there is no Microsoft trying to be /helpful/ at most awkward moment.
+
+I love simply clicking on links in Emacs to open them in Firefox.
+
+I love how there are is no Edge being shoved down my throat
+
+I love how the whole system works in harmony, with NixOS managing systemd services and home-manager taking care of application configuration.
+
+I like how clicking on =mailto= links in browser simply opens Emacs and I can immediately start writing stuff down.
+
+* The bad
+I still have issues with built-in speakers, but the speakers in external monitors do a good job as replacement, so its survivable.
+
+I am yet to perform extensive tests, but battery life seems slightly better on Windows.
+
+* The ugly
+The thought of ever having to use Windows, either as something that comes with new machine, or new job <shudder/>
