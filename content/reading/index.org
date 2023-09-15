@@ -8,4 +8,3 @@ In no particular order. May include resources useful apart from 'reading'.
 - [ ] [[https://build-your-own.org/database/00a_overview][Build your own Database from scratch]]
 - [ ] [[https://github.com/rust-lang/rustlings][Rustlings]]
 - [ ] [[https://mitchellh.com/writing/building-large-technical-projects][My Approach to Building Large Technical Projects – Mitchell Hashimoto]]
-- [ ] [[https://gavinray97.github.io/blog/what-good-are-record-patterns][What good are Record Patterns in Java?]]
