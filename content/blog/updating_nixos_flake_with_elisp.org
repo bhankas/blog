@@ -1,0 +1,74 @@
+#+title: Updating NixOS flake with Elisp
+#+slug: updating_nixos_flake_with_elisp
+#+date: <2023-09-15 Fri>
+#+hugo_auto_set_lastmod: t
+#+filetags: 
+
+* Why
+- As a nixos-unstable branch user, there are frequent updates to my system
+- Since I use Nix Flakes, I can and want to keep detailed log of what changes came in with any update
+- Doing so manually gets boring fast
+
+* Status quo
+My current flow looks like this:
+1. =cd /etc/nixos && nix flake update=
+2. Copy the 'relevant' part of command output
+3. Open magit commit dialogue
+4. Type ~flo~ to trigger a `yasnippet' which adds a handy commit message by using current date and copied command output.
+
+This generates a nice commit message that looks something like this:
+
+#+begin_example
+    flake.lock: 2023_09_15
+
+    • Updated input 'agenix':
+        'github:ryantm/agenix/d8c973fd228949736dedf61b7f8cc1ece3236792' (2023-07-24)
+      → 'github:ryantm/agenix/20deb735cc405831ba04a0088fecb3887aa255c0' (2023-09-14)
+    • Updated input 'home-manager':
+        'github:nix-community/home-manager/5171f5ef654425e09d9c2100f856d887da595437' (2023-09-11)
+      → 'github:nix-community/home-manager/d9b88b43524db1591fb3d9410a21428198d75d49' (2023-09-13)
+    • Updated input 'nixos-hardware':
+        'github:NixOS/nixos-hardware/ca41b8a227dd235b1b308217f116c7e6e84ad779' (2023-09-11)
+      → 'github:NixOS/nixos-hardware/570256327eb6ca6f7bebe8d93af49459092a0c43' (2023-09-14)
+    • Updated input 'nixpkgs':
+        'github:nixos/nixpkgs/3a2786eea085f040a66ecde1bc3ddc7099f6dbeb' (2023-09-11)
+      → 'github:nixos/nixpkgs/f2ea252d23ebc9a5336bf6a61e0644921f64e67c' (2023-09-14)
+#+end_example
+
+
+But these are still too many manual steps for me, especially for something I tend to run at least couple times a week.
+
+* The Fix
+
+So, with help of ChatGPT and amazing Emacs introspectability, I created an interactive function that does everything for me!
+
+#+begin_src emacs-lisp
+(defun bhankas-nixos-flake-update ()
+  "Update NixOS flake and commit changes to git with message."
+  (interactive)
+
+  (let ((command "cd /etc/nixos && sudo nix flake update") ;; the command
+        (regex (pcre-to-elisp "((^• Updated input .*)|(^\s+(→ )?'[^']+' \(.*\)$))")) ;; the regex for command output
+        (filtered-output ""))
+
+    ;; Step 1: Run the command
+    (setq command-output (shell-command-to-string command))
+
+    ;; Step 2: Create a temporary buffer and copy the command output
+    (with-temp-buffer
+      (insert command-output)
+
+      ;; Step 3: Create commit message by appending matching lines to filtered-output
+      (goto-char (point-min))
+      (while (re-search-forward regex nil t)
+        (setq filtered-output (concat filtered-output "\n" (match-string 0))))
+
+      ;; Step 4: Create a git commit message with prepared filtered-output
+      (vc-git-checkin '("flake.lock") (concat "flake.lock: " (format-time-string "%Y_%m_%d") "\n\n" filtered-output)))))
+#+end_src
+
+This function relies on awesome [[https://github.com/joddie/pcre2el][pcre2el]] package, because I know [[https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][PCRE]] and Elisp regex[fn:1] syntax is just similar enough but not quite that I can never remember it. The other dependency being built-in ~vc~ package, which shouldn't be a problem for any modern distro user[fn:2]
+
+[fn:1] Yeah yeah, regular expressions are fragile, but I'm lazy and this works.
+
+[fn:2] I know and use ~magit~ every day, but invoking something as heavyweight didn't feel right.
