@@ -5,6 +5,8 @@
 #+filetags: 
 
 *Update:* Changed title to a more suitable one, corrected grammar and added more optimized final code.
+
+*Update 2:* Thanks to @viz on Emacs matrix room, added even better code.
 -----
 
 Few weeks ago I discovered =org-agenda-follow-mode= and =org-agenda-follow-indirect= variable. Its combination automatically shows a little preview of tasks in ~org-agenda~ in separate pop-up window. It is very useful to glance at more details of a task on the fly, and I like it.
@@ -54,9 +56,8 @@ So, I needed a better, more performant solution. And then the bulb lit! Instead 
 
 #+begin_src emacs-lisp
 (defun bhankas-org-agenda-limit-indirect-max (og-fun &rest args)
-  (setq bhankas-fit-buffer-limit-max t)
-  (apply og-fun args)
-  (makunbound bhankas-fit-buffer-limit-max))
+  (dlet ((bhankas-fit-buffer-limit-max t))
+    (apply og-fun args)))
 
 (defun bhankas-org-agenda-limit-indirect-buffer (og-fun &rest args)
   (when (boundp 'bhankas-fit-buffer-limit-max)
