@@ -1,14 +1,17 @@
-#+title: Modifying emacs-lisp function arguments conditionally
+#+title: Taming org-agenda indirect buffer size
 #+slug: modifying_emacs_lisp_function_arguments_conditionally
 #+date: <2023-11-10 Fri>
 #+hugo_auto_set_lastmod: t
 #+filetags: 
 
+*Update:* Changed title to a more suitable one, corrected grammar and added more optimized final code.
+-----
+
 Few weeks ago I discovered =org-agenda-follow-mode= and =org-agenda-follow-indirect= variable. Its combination automatically shows a little preview of tasks in ~org-agenda~ in separate pop-up window. It is very useful to glance at more details of a task on the fly, and I like it.
 
-But, the pop-uup buffer automatically takes as much space as necessary by default. This is a problem, because for repeated tasks (e.g. watering plants) the LOGBOOK property drawer can be hundreds of lines, and the pop-up occupies nearly entire display, sort-of defeating the purpose.
+But, the pop-up buffer automatically takes as much space as necessary by default. This is a problem, because for repeated tasks (e.g. watering plants) the LOGBOOK property drawer can be hundreds of lines, and the pop-up occupies nearly entire display, sort-of defeating the purpose.
 
-So, I went about trying to find what the =org-agenda= keybinds are doing. This is where the rabbit hole leads:
+So, I went about trying to find what the =org-agenda= keybindings are doing. This is where the rabbit hole leads:
 
 #+begin_src
 helpful-key
@@ -26,11 +29,11 @@ Function definition of =fit-window-to-buffer= function is fairly straightforward
 (fit-window-to-buffer &optional WINDOW MAX-HEIGHT MIN-HEIGHT MAX-WIDTH MIN-WIDTH PRESERVE-SIZE)
 #+end_src
 
-I can simply add an extra argument for ~MAX-HEIGHT~ and it will do what I want.
+An extra argument for ~MAX-HEIGHT~ and it will do the job, easy.
 
-But, it turns out, this =fit-window-to-buffer= function is called quite often, most notably by the awesome =which-key=. So I want to modify the argument list, but only when it is called by the aforenoticed =org-agenda-tree-indirect-buffer=.
+But wait! Turns out, this =fit-window-to-buffer= function is called quite often, most notably by the awesome =which-key=. So I want to modify the argument list, but only when it is called by the aforementioned =org-agenda-tree-indirect-buffer=.
 
-It turns out emacs-lisp has some nice functionality built-int to walk the stack-trace (or in elisp ling, a =backtrace=). So I cooked up a function that walks the backtrace to determine if =fit-window-to-buffer= was called by =org-agenda-tree-indirect-buffer= and append ~MAX-HEIGHT~ to arguments list if it is:
+Emacs-lisp has some nice functionality built-int to walk the stack-trace (or in elisp ling, a =backtrace=). So I cooked up a function that walks the backtrace to determine if =fit-window-to-buffer= was called by =org-agenda-tree-indirect-buffer= and append ~MAX-HEIGHT~ to arguments list if it is:
 
 #+begin_src emacs-lisp
 (defun bhankas-org-agenda-limit-indirect-buffer (og-fun &rest args)
@@ -45,7 +48,7 @@ It turns out emacs-lisp has some nice functionality built-int to walk the stack-
 (advice-add 'fit-window-to-buffer :around #'bhankas-org-agenda-limit-indirect-buffer)
 #+end_src
 
-And this works. The only problem is, walking the entire backtrace for every single invocation of function, just to update args during very small minority number of invocations that match the criteria is computationally expensive. =fit-window-to-buffer= being called on every which-key invocation makes this particularly aweful solution because it is invoked very very often in my workflow, sometimes multiplle times per second.[fn:1]
+And this works. The only problem is, walking the entire backtrace for every single invocation of function, just to update args during very small minority number of invocations that match the criteria is computationally expensive. =fit-window-to-buffer= being called on every which-key invocation makes this particularly awful solution because it is invoked very very often in my workflow, sometimes multiple times per second.[fn:1]
 
 So, I needed a better, more performant solution. And then the bulb lit! Instead of one advice,  I could use two advices, and use some global state as caller indicator :). Here it is:
 
@@ -53,16 +56,19 @@ So, I needed a better, more performant solution. And then the bulb lit! Instead 
 (defun bhankas-org-agenda-limit-indirect-max (og-fun &rest args)
   (setq bhankas-fit-buffer-limit-max t)
   (apply og-fun args)
-  (setq bhankas-fit-buffer-limit-max nil))
+  (makunbound bhankas-fit-buffer-limit-max))
 
 (defun bhankas-org-agenda-limit-indirect-buffer (og-fun &rest args)
-  (let ((new-args args))
-    (when bhankas-fit-buffer-limit-max
-      (setq new-args (append args '(20))))
-    (apply og-fun new-args)))
+  (when (boundp 'bhankas-fit-buffer-limit-max)
+    (setq args (append args '(20))))
+  (apply og-fun args))
 
 (advice-add 'fit-window-to-buffer :around #'bhankas-org-agenda-limit-indirect-buffer)
 (advice-add 'org-agenda-tree-to-indirect-buffer :around #'bhankas-org-agenda-limit-indirect-max)
 #+end_src
 
 [fn:1] I set =which-key-idle-delay= to =0.1=, because I like it that way.
+
+# Local Variables:
+# jinx-languages: "en"
+# End:
