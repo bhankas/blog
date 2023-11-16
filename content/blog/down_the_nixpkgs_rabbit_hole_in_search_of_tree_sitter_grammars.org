@@ -1,0 +1,46 @@
+#+title: Down the Nixpkgs rabbit-hole in search of tree-sitter grammars
+#+slug: down_the_nixpkgs_rabbit_hole_in_search_of_tree_sitter_grammars
+#+date: <2023-11-16 Thu>
+#+hugo_auto_set_lastmod: t
+#+filetags: 
+
+So, with the festive season here, there's guests at home, and since everyone naps after lunch, I pursued continuation on long-longed-after project of mine.
+
+Of course, I took the opportunity to try out the new language aye was eyeing, this time it being [[https://gleam.run/][Gleam]]. I'll leave off the language choice here, since that is not the subject of this writeup, but will say that I liked what is happening with this one here and it interested me greatly.
+
+So, I installed gleam, created a new project, ran the test and it worked! Great job gleam team!
+
+Time to mold the code to fit my fold. Oh, there's already the nice [[https://github.com/gleam-lang/gleam-mode][gleam-mode]], again, by the gleam team, nice!
+
+But wait, Emacs complains no tree-sitter grammar is found for this little language. Wat! I just add ALL the tree-sitter grammars to my Emacs closure[fn:1], and there is, after all, [[https://github.com/gleam-lang/tree-sitter-gleam][gleam-tree-sitter]] already, again by the team behind Gleam.
+
+So what's wrong here?
+
+Turns out, Nixpkgs does not package the Gleam grammar for tree-sitter, along with quite a few newer languages.
+
+Why? Doesn't matter. I'll do it myself. Time to roll up the sleeves, how hard can it be!
+
+Let's see.. I see the Emacs tree-sitter grammars are defined by [[https://github.com/NixOS/nixpkgs/blob/05882d1dcaa2c4889cac3a8994d391febb3cc7e6/pkgs/applications/editors/emacs/elisp-packages/manual-packages/tree-sitter-langs/default.nix][tree-sitter-langs]] attribute, which builds its original namesake package from [[https://github.com/emacs-tree-sitter/tree-sitter-langs/][github]]. Okay, upstream itself does not know about Gleam grammar, makes sense why Nix doesn't either. No biggie, I sent a PR to add Gleam grammar, the maintainer was happy[fn:2] to accept it. MELPA made an automated release pretty much immediately.
+
+Time to update Nixpkgs itself. How do they update Melpa packages here again? Oh, its all automated? Well, okay, how do I update the whole thing again? Oh! There's a cool little [[https://github.com/NixOS/nixpkgs/blob/05882d1dcaa2c4889cac3a8994d391febb3cc7e6/pkgs/applications/editors/emacs/elisp-packages/update][update script]] all ready already! And thanks to /The Nix Way™/ it works no problems, and updates all ELPA, MELPA and NONGNU ELPA packages in one go. Wouldn't call it simple, but pretty painless.[fn:3]
+
+So far so good. Lets get this new baby in Nixpkgs! Where do I do that? [[https://github.com/NixOS/nixpkgs/blob/05882d1dcaa2c4889cac3a8994d391febb3cc7e6/pkgs/applications/editors/emacs/elisp-packages/manual-packages/tree-sitter-langs/default-grammars.json][Here]] is the list of all grammars Nixpkgs uses to build its elisp grammars. But this doesn't seem to be very manual work. Oh, this is also automated, this time with a [[https://github.com/NixOS/nixpkgs/blob/05882d1dcaa2c4889cac3a8994d391febb3cc7e6/pkgs/applications/editors/emacs/elisp-packages/manual-packages/tree-sitter-langs/update-defaults.py][different]] script. Ohkay.. Running that.. Whats this complain it spat?
+
+#+begin_example
+...
+Missing grammar: tree-sitter-gleam
+...
+#+end_example
+
+There's still quite a few grammars missing, along with one that we want. Hmm.. Lookie [[https://github.com/NixOS/nixpkgs/tree/e44462d6021bfe23dfb24b775cc7c390844f773d/pkgs/development/tools/parsing/tree-sitter/grammars][here]]! There are boatload of tree-sitter grammars here, and they conveniently do not have the ones that our previous script complained about. Fine. Lets update them. Where is that again? Oh right, [[https://github.com/NixOS/nixpkgs/blob/e44462d6021bfe23dfb24b775cc7c390844f773d/pkgs/development/tools/parsing/tree-sitter/update.nix][yet another different place]].
+
+Fine! Update that, and rebuild the whole thing up. Wait, why does the =update-defaults.py= still complain about missing gleam grammar? I'm getting tired, what was I trying to do today? I've already forgot. Oh well, just another Thursday in ADHD land. Lets ask the fine soul reviewing my original PR to Nixpkgs for bumping up elisp packages.
+
+* TODO Update once more progress is made :(
+SCHEDULED: <2023-11-17 Fri 09:00>
+
+[fn:1] https://git.bhankas.org/payas/nixos/src/commit/efa54aabd2e3022e0db929e65d930d5bc6538dcc/modules/emacs/emacs.nix#L51
+
+[fn:2] And fast! Like review + merge + new release in single calendar day fast!
+
+[fn:3] of course, as I understood in this process, this process leverages [[https://github.com/nix-community/emacs-overlay][emacs-overlay]], and unless that one gets its automated MELPA update, neither does Nixpkgs.
