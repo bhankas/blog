@@ -1,6 +1,3 @@
-:PROPERTIES:
-:ID:       20240711T104640.928105
-:END:
 #+title: Managing Emacs with Nix
 #+slug: managing_emacs_with_nix
 #+date: <2024-07-11 Thu>
