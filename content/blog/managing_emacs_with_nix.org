@@ -1,0 +1,43 @@
+:PROPERTIES:
+:ID:       20240711T104640.928105
+:END:
+#+title: Managing Emacs with Nix
+#+slug: managing_emacs_with_nix
+#+date: <2024-07-11 Thu>
+#+hugo_auto_set_lastmod: t
+#+filetags:
+
+* Why
+Henrik Lissner said it best:
+
+#+begin_quote
+The Emacs ecosystem is temperamental. Things break and they break often. Disaster recovery should be a priority!
+#+end_quote
+
+I've been using Emacs since 2020 (!). As it goes, my reliance on it has grown. I use it to take notes, manage calendar, access my email, participate in discussions, read books and papers (while taking inline referenced notes) and of course, edit my emacs config.
+
+But, the quote above is not just puff of vain air. It comes from decade of experience by a veteran elisp hacker, and I've come to experience the same.
+
+Over past couple of years, my Emacs config broke multiple times. Pdf-tools has been the single most problematic package, and I had to disable it at least a dozen times over my Emacs journey. Org-mode also has had issues due to how other packages in my workflow interact with it, namely age.el and Nix.
+
+Then there are of course occasional breakages introduced with tree-sitter lib updates, org-roam database breaking for 999th time, and ugh.
+
+I need a fix and I need it last year.
+
+* The What
+NixOS is how software should be managed, and I'll die on that hill. Naturally, managing Emacs (and doom) with Nix is the way to go. [[https://github.com/jwiegley/dot-emacs][Joh Wiegley]] has been doing so for years. But one, I'm no John Wiegley, my nix-fu is much too weak to take on this monumental task. [[https://github.com/nix-community/nix-doom-emacs][Other efforts]] for it have been not-ready for a while because the nature of the beast is so hairy. So I waited.
+
+And then, one day, out of the blue, I come across [[https://github.com/marienz/nix-doom-emacs-unstraightened][nix-doom-emacs-unstraightened]]
+
+Unlike previous efforts, this one (names are too damn long) re-uses community efforts and package pins for working config. It uses other automation like emacs-oeverlay and its own CI to test common config combinations and make sure things remain working. This means I get the benefit of being part of larger ecosystem. Bugs are found early, fixes are created early, automation lightens everyone's work and everybody goes home happy.
+
+* The How
+My NixOS config is slightly weird. I use [[https://nix-community.github.io/home-manager/][home-manager]] to manage Emacs package. Home-manager itself is imported as a NixOS module. =nix-doom-emacs-unstraightened= itself has a home-manager module, and I just didn't know how to make sense of it. So I [[https://discourse.nixos.org/t/how-to-use-external-home-manager-module-in-home-manager-itself-used-as-nixos-module/48746/1][asked the community]], and quickly received [[https://discourse.nixos.org/t/how-to-use-external-home-manager-module-in-home-manager-itself-used-as-nixos-module/48746/2][solution]].
+
+* The Bliss
+Ermegerd this thing works! Holy cat batman, this thing actually works! org-roam doesn't flake out, age.el works, pdf-tools works, org-noter works, mu4e has no silly problems, everything just works!
+
+Its not all perfect. Build times can get slow. And startup is now atrociously, painfully slow (~90s). But the build times are not too often encountered, and startup was quickly sorted out by moving to emacs daemon and emacs client.
+
+My Emacs is working again, and thanks to Nix, it will now keep working. If things break in future, it will either fail to upgrade, and even if it does build and fail after, rollback is as simple as a =nixos-rebuild= away. Happy times!
+
