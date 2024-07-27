@@ -1,0 +1,58 @@
+#+title: Self-hosted site analytics
+#+slug: self_hosted_site_analytics
+#+date: <2024-07-27 Sat>
+#+hugo_auto_set_lastmod: t
+#+filetags:
+
+Way back in last May, I added [[https://bhankas.org/blog/adding_blog_analytics_goatcounter/][site analytics]] for this blog using [[https://github.com/arp242/goatcounter][goatcounter]].
+
+To rehash, goatcounter does not collect PII, does not need cookie banner, does not send data to rando third party service and does not suck.
+
+It is simple, dumb, has graphs to show where traffic comes from (from referral headers) and where it goes (which posts got more views). In recent months it even added a dark mode! I've been quite happy with it, and its perfect for my needs.
+
+At the time of adding it, I did not have my own server, so I used the goatcounter.com service. Even though it never collects user data, it was always planned to eventually self-host the service and bring the data in-house. Thanks to NixOS, these days I manage my own server (a wall-mounted Raspberry Pi 4), and am increasingly confident at being able to keep it running.
+
+For a long while NixOS did not have a goatcounter package, and my Nix-fu was not (and still mostly is not) enough to get it packaged. But recently someone [[https://github.com/NixOS/nixpkgs/pull/325118][packaged it in nixpkgs]], making clear the road to a NixOS module. So I created [[https://github.com/NixOS/nixpkgs/pull/327184][pull request]] with barebones NixOS module, which got merged and released to =unstable= channel this week, finally enabling full self-hosted site analytics for yours truly. I ended up adding below snippet to my NixOS config, and with one ~nixos-rebuild~, it was up and about:
+
+#+begin_src nix
+{ ... }:
+{
+  services = {
+    goatcounter = {
+      enable = true;
+      proxy = true;
+      address = "127.0.0.1";
+      port = 5982;
+    };
+
+    nginx = {
+      virtualHosts = {
+        "analytics.bhankas.org" = {
+          addSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:5982";
+            proxyWebsockets = true;
+          };
+        };
+      };
+    };
+  };
+
+  security.acme = {
+    acceptTerms = true;
+    certs = {
+      "analytics.bhankas.org" = {
+        email = "admin@bhankas.org";
+        dnsResolver = "1.1.1.1:53";
+      };
+    };
+  };
+}
+#+end_src
+
+Exporting data from goatcounter is incredibly easy, as is importing it back in your own hosted instance. Once I had done that, I switched the analytics snippet to use my own subdomain, and all is well :)
+
+One happy coincidence is that goatcounter.com is often blocked by ad-blockers, hiding users with them. Nothing wrong with that[fn:1], but its something that slipped through before. Now that the js comes from same domain, most browsers and adblockers should trust it.
+
+[fn:1] my own ad blocker (the fantastic [[https://github.com/gorhill/uBlock][uBlock Origin]]) does, and I recommend it to everyone I care about.
